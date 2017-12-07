@@ -3,17 +3,18 @@ import re
 
 sentence_id = 0
 words = []
+
 print ('name\tsentence_id\torder_id\tword')
 for line in fileinput.input():
 	if (re.search("\w.+:.*",line) != None):
-		m = re.search("(?P<name>\w.+):(?P<words>.*)$",line)
+		m = re.search("^(?P<name>\w.+):(?P<words>[^:]*)<br>$",line)
 		if (m == None):
-			break
+			continue
 		name = m.group("name");
 		wordstring = m.group("words");
 		
 		sentence_id = sentence_id+1;
-		wordstring = wordstring.replace('.',' ').replace('\'',' ').replace('-','').replace(',','').replace('!','').replace('?','')
+		wordstring = wordstring.replace('.',' ').replace('\'',' ').replace('-','').replace(',','').replace('!','').replace('?','').replace('(','').replace(')','').replace('<i>','').replace('</i>','')
 		words = wordstring.split(" ");
 		
 		#usuwanie czegos co nie jest slowami:
