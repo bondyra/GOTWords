@@ -16,7 +16,7 @@ for line in fileinput.input():
 		name = m.group("name");
 		wordstring = m.group("words");
 		sentence_id = sentence_id+1;
-		wordstring = wordstring.replace('.',' ').replace('\'',' ').replace('-','').replace(',','').replace('!','').replace('?','').replace('(','').replace(')','').replace('<i>','').replace('</i>','').replace('<a>','').replace('</a>','').replace('\t','').replace(':','')
+		wordstring = wordstring.replace('.',' ').replace('-','').replace(',','').replace('!','').replace('?','').replace('(','').replace(')','').replace('<i>','').replace('</i>','').replace('<a>','').replace('</a>','').replace('\t','').replace(':','')
 		words = wordstring.split(" ");
 		
 		name = name.replace('\’','').replace('\'','')	
