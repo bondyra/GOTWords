@@ -1,13 +1,35 @@
 library(dplyr)
+library(wordcloud)
 
-data = read.table("~/repos/GOTWords/data.txt",sep=",",header=T,quote="")
+
+data = read.table("data.txt",sep=",",header=T,quote="")
+write.csv(character(0), "history.txt", row.names = F)
+write.csv("TYRION", "character.txt", row.names = F)
 
 shinyServer(function(input, output) {
+	getNextWord = function() {
+		renderUI({
+			character = input$character
+			nextword = input$nextword
+			history = as.character(read.table("history.txt",header=T)[,1])
+			lastWord = history[length(history)]
+			if (length(lastWord) == 0)
+				lastWord = ""
+			words = get_words(data = data, charname = input$character, prev_words = history, cnt = 100) 
+			selectInput("nextword", "Słowo:",unique(c(lastWord, as.character(words$word))), selected = lastWord)
+		})
+	}
+	observeEvent(input$previous, {
+		history = as.character(read.table("history.txt",header=T)[,1])
+		history = head(history, length(history) - 1)
+		write.csv(as.data.frame(history), "history.txt", row.names = F)
+		output$nextword = getNextWord()
+	})
   
   #R data processing
-  get_words = function (data, charname, wordno = 1, prev_words=NULL, cnt = 30){
+  get_words = function (data, charname, prev_words=character(0), cnt = 30){
     
-    stopifnot ((wordno-1) == length(prev_words))
+    wordno = length(prev_words) + 1
     name_words = data %>% filter(name==charname)
     
     if (wordno==1){ #first word, simple operation
@@ -25,15 +47,26 @@ shinyServer(function(input, output) {
     return (topwords)
   }
   
-  #get words cloud response
-  getCloud <- function(){
-    if (!is.null(input$req_data)){
-      req_name = input$req_data$name;
-      req_order_id = input$req_data$orderID;
-      
-      get_words(data = data, charname = req_name)
-    }
-  }
-  output$perfbarplot <- reactive(getCloud())  #when data changes, update the bar plot
-
+  output$cloud <- renderPlot({
+  	character = as.character(read.table("character.txt",header=T)[1,1])
+  	if (input$character != character) {
+  		write.csv(character(0), "history.txt", row.names = F)
+  		write.csv(input$character, "character.txt", row.names = F)
+  	}
+  	history = as.character(read.table("history.txt",header=T)[,1])
+  	lastWord = history[length(history)]
+  	if (length(lastWord) == 0)
+  		lastWord = ""
+  	if (!is.null(input$nextword) && nchar(input$nextword) > 0 && input$nextword != lastWord) {
+  		history[length(history) + 1] = input$nextword 
+  		write.csv(as.data.frame(history), "history.txt", row.names = F)
+  		lastWord = input$nextword
+  	}
+  	words = get_words(data = data, charname = input$character, prev_words = history, cnt = 100) 
+  	if (length(words) > 0) {
+	  		return(wordcloud(words$word, words$n, scale = c(0.5,10*input$dimension[1]/2560) #maksymalny rozmiar slowa zalezny od szerokosci okna
+	  																		 , random.color=F, colors=heat.colors(30), min.freq = 0, max.words = 30))
+	  	}
+  	})  #when data changes, update the bar plot
+  output$nextword = getNextWord()
 })
