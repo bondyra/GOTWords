@@ -30,7 +30,7 @@ shinyUI(fluidPage(
   	sliderInput("mincount", "Minimalna liczba wystąpień:", 1, 10, value=1),
   	checkboxInput("ordered", "Słowa muszą występować w wypowiedzi w kolejności zaznaczenia"),
   	radioButtons("graphtype", "Typ wykresu:", c("chmura słów" = "wordcloud", "słupkowy" = "barplot"), selected = "wordcloud"),
-  	sliderInput("wordcount", "Liczba przedstawionych słów:", 5, 30, value=20)
+  	sliderInput("wordcount", "Liczba przedstawionych słów:", 5, 60, value=30)
   ),
   mainPanel(
   	uiOutput("wordhistory"),
