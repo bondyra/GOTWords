@@ -22,12 +22,18 @@ shinyUI(fluidPage(
                                     Shiny.onInputChange("dimension", dimension);
                                 });
                             ')), #wyciagniecie rozmiaru okna
-  	tags$head(tags$style("#cloud{height:90vh !important;}")), #zrobienie, zeby wykres zajmowal caly ekran
+  	tags$head(tags$style("#cloud{height:85vh !important;}")), #zrobienie, zeby wykres zajmowal caly ekran
   	selectInput("character", "Postać:", characters),
   	uiOutput("nextword"),
-  	actionButton("previous", "Wstecz")
+  	actionButton("previous", "Wstecz"),
+  	actionButton("reset", "Reset"),
+  	sliderInput("mincount", "Minimalna liczba wystąpień:", 1, 10, value=1),
+  	checkboxInput("ordered", "Słowa muszą występować w wypowiedzi w kolejności zaznaczenia"),
+  	radioButtons("graphtype", "Typ wykresu:", c("chmura słów" = "wordcloud", "słupkowy" = "barplot"), selected = "wordcloud"),
+  	sliderInput("wordcount", "Liczba przedstawionych słów:", 5, 30, value=20)
   ),
   mainPanel(
+  	uiOutput("wordhistory"),
     plotOutput("cloud")
   )
 ))
