@@ -110,14 +110,15 @@ shinyServer(function(input, output) {
   	if (length(words) > 0) {
   		maxwords = input$wordcount
   		if (input$graphtype == "wordcloud")
-	  		return(wordcloud(words$word, words$n, scale = c(0.5,10*input$dimension[1]/2560) #maksymalny rozmiar slowa zalezny od szerokosci okna
-	  																		 , random.color=F, colors=heat.colors(30), min.freq = 0, max.words = maxwords))
+	  		return(wordcloud(words$word, words$n, scale = c(10*input$dimension[1]/1560,0.5) #maksymalny rozmiar slowa zalezny od szerokosci okna
+	  																		 , random.color=F, colors=c("skyblue","dodgerblue","dodgerblue2","midnightblue"), min.freq = 0, max.words = maxwords))
   		else {
   				words = words[1:maxwords,]
   				words$word = factor(words$word, levels = words$word[order(words$n, decreasing = T)])
   				return(ggplot(data = words, aes(word, n)) + 
-  							 	geom_bar(stat="identity") +
-  							 	geom_text(aes(label=n), position=position_dodge(width=0.9), vjust=-0.25, color="blue") + 
+  							 	geom_bar(stat="identity", aes(fill=n)) +
+  							 	geom_text(aes(label=n), position=position_dodge(width=0.9), vjust=-0.25, color="black") + 
+  							 	scale_fill_gradient2(high="midnightblue",low="aliceblue",mid="dodgerblue2") +
   							 	ylab("Liczba wystąpień") +
   							 	theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(),
   							 				panel.background = element_blank(), axis.line = element_blank(),
@@ -141,3 +142,4 @@ shinyServer(function(input, output) {
   })
   output$nextword = getNextWord()
 })
+?scale_fill_continuous
