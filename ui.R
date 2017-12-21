@@ -30,11 +30,20 @@ shinyUI(fluidPage(
   	sliderInput("mincount", "Minimalna liczba wystąpień:", 1, 10, value=1),
   	checkboxInput("ordered", "Uwzględniaj kolejność słów"),
   	radioButtons("graphtype", "Typ wykresu:", c("chmura słów" = "wordcloud", "słupkowy" = "barplot"), selected = "wordcloud"),
-  	sliderInput("wordcount", "Liczba przedstawionych słów:", 5, 60, value=30)
+  	sliderInput("wordcount", "Liczba przedstawionych słów:", 5, 60, value=30),
+  	checkboxInput("help", "Pokaż instrukcję"),
+  	conditionalPanel(
+  	  condition = "input.help == 1",
+  	  HTML("<div>Aplikacja wizualizuje słowa wypowiadane przez najważniejszych bohaterów Gry o Tron.<br/><br/>
+           Wykresy pokazują najczęstsze słowa, które występują w jednej wypowiedzi wraz z wybranymi już słowami.<br/>
+           Można również uwzględniać kolejność słów - wówczas pokazane słowa występują w jednej wypowiedzi zawsze po wybranych 
+           już słowach.<br/><br/>
+  	       <i>Wszelkie proste słowa (przedimki, zaimki) nie są rozważane w wizualizacji.</i></div>"))
   ),
   mainPanel(
   	uiOutput("wordhistory"),
   	HTML('<hr style="color: black;">'),
+  	HTML('<p>Najczęściej używane słowa</p>'),
     plotOutput("cloud")
   )
 ))

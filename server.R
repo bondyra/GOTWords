@@ -26,7 +26,7 @@ shinyServer(function(input, output) {
 			finalwords = c(lastWord, as.character(words$word))
 			names(finalwords) = finalwords
 			names(finalwords)[-which(finalwords == lastWord)] = paste(words$word, " (", words$n, ")", sep="")
-			selectInput("nextword", "Słowo:", finalwords, selected = lastWord)
+			selectInput("nextword", "Wybierz słowo:", finalwords, selected = lastWord)
 		})
 	}
 	
@@ -110,7 +110,7 @@ shinyServer(function(input, output) {
   	if (length(words) > 0) {
   		maxwords = input$wordcount
   		if (input$graphtype == "wordcloud")
-	  		return(wordcloud(words$word, words$n, scale = c(10*input$dimension[1]/1560,0.5) #maksymalny rozmiar slowa zalezny od szerokosci okna
+	  		return(wordcloud(words$word, words$n, scale = c(10*input$dimension[1]/2560,0.5) #maksymalny rozmiar slowa zalezny od szerokosci okna
 	  																		 , random.color=F, colors=c("skyblue","dodgerblue","dodgerblue2","midnightblue"), min.freq = 0, max.words = maxwords))
   		else {
   				words = words[1:maxwords,]
@@ -138,8 +138,7 @@ shinyServer(function(input, output) {
   	if (!any(history == input$nextword))
   		history = c(history, input$nextword)
   	wordHistoryText = paste(history, collapse = ifelse(input$ordered, " -> ", ", "))
-  	h4(paste("Słowa:", wordHistoryText))
+  	h4(paste("Wybrane słowa:", wordHistoryText))
   })
   output$nextword = getNextWord()
 })
-?scale_fill_continuous
